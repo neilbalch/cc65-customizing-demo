@@ -1,6 +1,6 @@
 # cc65-customizing-demo
 
-Contains the result of following the `cc65` project's [tutorial](https://cc65.github.io/doc/customizing.html) for defining a custom `cc65` target for a "bare-metal" 65C02 (*but actually using the 65SC02 instruction set*) and building a "Hello World!" program for it.
+Contains the result of following the [`cc65` project](https://cc65.github.io)'s [tutorial](https://cc65.github.io/doc/customizing.html) defining a custom target for a "bare-metal" 65C02 (*but actually using the 65SC02 instruction set*) and building a "Hello World!" program for it.
 
 ## Repository Structure
 
