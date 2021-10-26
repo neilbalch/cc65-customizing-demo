@@ -1,3 +1,4 @@
-main.s
+build/*.s
 *.o
+*.map
 a.out
