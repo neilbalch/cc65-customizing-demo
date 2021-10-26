@@ -11,11 +11,14 @@ all: crt0.o main.o rs232_tx.o interrupt.o vectors.o wait.o
 	ld65 -C sbc.cfg -m build/main.map build/interrupt.o build/vectors.o \
 				build/wait.o build/rs232_tx.o build/main.o build/sbc.lib -o build/a.out
 
+# Create the build directory... if it doesn't already exist. (since this is the
+# first target to run)
 # Adopt the cc65's stock "supervision.lib" (for the Watara Supervision) as the
 # basis for a runtime library without console I/O, mouse, joystick, or other
 # stock perhipherals that many 6502-based computers are connected to.
 # Then, modify its startup code with the new version by compiling and archiving.
 crt0.o:
+	mkdir -p build
 	cp /usr/share/cc65/lib/supervision.lib build/sbc.lib
 	$(AS) crt0.s -o build/crt0.o
 	ar65 a build/sbc.lib build/crt0.o
