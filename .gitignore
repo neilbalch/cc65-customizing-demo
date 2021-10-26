@@ -1,4 +1,4 @@
-build/*.s
+build/*
 *.o
 *.map
 a.out

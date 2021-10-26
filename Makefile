@@ -27,4 +27,5 @@ wait:
 
 .PHONY: clean
 clean:
-	rm -rf build/*.o build/*.s build/a.out build/main.map
+	# rm -rf build/*.o build/*.s build/a.out build/main.map
+	rm -rf build/*
