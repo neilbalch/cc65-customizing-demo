@@ -4,11 +4,15 @@
 ;
 ; Startup code for cc65 (Single Board Computer version)
 
+; Allow the _init and _exit symbols to be accessed by other modules.
 .export   _init, _exit
+; Import knowledge of a _main symbol (will be present in the compiled main.o).
 .import   _main
 
-.export   __STARTUP__ : absolute = 1        ; Mark as startup
-.import   __RAM_START__, __RAM_SIZE__       ; Linker generated
+.export   __STARTUP__ : absolute = 1   ; Mark as startup code, to be
+                                       ; executed on reset.
+.import   __RAM_START__, __RAM_SIZE__  ; Import the RAM's properties from
+                                       ; linker-generated symbols.
 
 .import    copydata, zerobss, initlib, donelib
 

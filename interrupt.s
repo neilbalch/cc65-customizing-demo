@@ -6,12 +6,14 @@
 ;
 ; Checks for a BRK instruction and returns from all valid interrupts.
 
-.import   _stop
-.export   _irq_int, _nmi_int
+.import   _stop ; Import knowledge of the _stop symbol, used to signal a
+                ; software fault.
+.export   _irq_int, _nmi_int  ; Allow the _irq_int and _nmi_int symbols to be
+                              ; placed in the vector table (interrupt section).
 
-.segment  "CODE"
+.segment  "CODE" ; Force placement into the CODE memory section.
 
-.PC02                             ; Force 65C02 assembly mode
+.PC02                             ; Force ca65 to use the 65C02 assembly mode
 
 ; ---------------------------------------------------------------------------
 ; Non-maskable interrupt (NMI) service routine
