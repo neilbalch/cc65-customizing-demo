@@ -10,7 +10,8 @@
 #define TX_FIFO_FULL (FIFO_STATUS & 0x01)
 #define RX_FIFO_EMPTY (FIFO_STATUS & 0x02)
 
-#include "do_logic.c"
+#include "util.h"
+#include "game_code.c"
 #pragma code-name ("CODE")
 
 extern void wait();
@@ -25,14 +26,23 @@ extern void wait();
 extern void __fastcall__ rs232_tx(char *str);
 
 int main() {
-  while (1) {  //  Run forever
-    wait();    //  Wait for an RX FIFO interrupt
+  reset();
 
-    while (RX_FIFO_EMPTY == 0) {   //  While the RX FIFO is not empty
-      if (FIFO_DATA == '?') {      //  Dmes the RX character = '?'
-        rs232_tx("Hello World!");  //  Transmit "Hello World!"
-      }                            //  Discard any other RX characters
-    }
+  while (1) {  //  Run forever
+    // wait();    //  Wait for an RX FIFO interrupt
+
+    // while (RX_FIFO_EMPTY == 0) {   //  While the RX FIFO is not empty
+    //   if (FIFO_DATA == '?') {      //  Dmes the RX character = '?'
+    //     rs232_tx("Hello World!");  //  Transmit "Hello World!"
+    //   }                            //  Discard any other RX characters
+    // }
+
+    do_logic();
+
+    // TODO: Implement correct IRQ handler to wait for the vertical blanking interval.
+    cli();
+    fill_vram();
+    sei();
   }
 
   return 0;  //  We should never get here!
