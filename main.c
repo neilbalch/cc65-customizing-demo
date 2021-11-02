@@ -10,6 +10,9 @@
 #define TX_FIFO_FULL (FIFO_STATUS & 0x01)
 #define RX_FIFO_EMPTY (FIFO_STATUS & 0x02)
 
+#include "do_logic.c"
+#pragma code-name ("CODE")
+
 extern void wait();
 // __fastcall__ (default for functions *not* specifying __cdecl__) instructs
 // cc65 to (for non-variadic functions) pass the rightmost function argument
