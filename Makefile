@@ -9,7 +9,7 @@ CFLAGS = -t none -O --cpu 65sc02
 # Specify the sbc.cfg linker config file (-C) and create a memory map file (-m)
 all: crt0.o main.o rs232_tx.o interrupt.o vectors.o wait.o
 	ld65 -C sbc.cfg -m build/main.map build/interrupt.o build/vectors.o \
-				build/wait.o build/rs232_tx.o build/main.o build/sbc.lib -o build/a.out
+				build/wait.o build/rs232_tx.o build/main.o build/sbc.lib -o build/6502
 
 # Create the build directory... if it doesn't already exist. (since this is the
 # first target to run)
@@ -22,12 +22,15 @@ crt0.o:
 	cp /usr/share/cc65/lib/supervision.lib build/sbc.lib
 	$(AS) crt0.s -o build/crt0.o
 	ar65 a build/sbc.lib build/crt0.o
+	echo "crt0.o"
 
-main.o:
-	$(CC) $(CFLAGS) main.c -o build/main.s
-	$(AS) $(ASFLAGS) build/main.s -o build/main.o
+# Have every C *.c file be compiled and assembled by an implicit rule
+# (https://rebelsky.cs.grinnell.edu/musings/cnix-make-implicit-rules)
+%.o: %.c
+	$(CC) $(CFLAGS) $^ -o build/$^.s
+	$(AS) $(ASFLAGS) build/$^.s -o build/$@
 
-# Have every other/normal assembly *.s file be assembled by an implicit rule
+# Have every assembly *.s file be assembled by an implicit rule
 # (https://rebelsky.cs.grinnell.edu/musings/cnix-make-implicit-rules)
 %.o: %.s
 	$(AS) $(ASFLAGS) $^ -o build/$@
