@@ -11,7 +11,7 @@
 #define RX_FIFO_EMPTY (FIFO_STATUS & 0x02)
 
 #include "util.h"
-#include "game_code.c"
+#include "game_code.h"
 #pragma code-name ("CODE")
 
 extern void wait();
@@ -29,7 +29,7 @@ int main() {
   reset();
 
   while (1) {  //  Run forever
-    // wait();    //  Wait for an RX FIFO interrupt
+    wait();    //  Wait for an RX FIFO interrupt
 
     // while (RX_FIFO_EMPTY == 0) {   //  While the RX FIFO is not empty
     //   if (FIFO_DATA == '?') {      //  Dmes the RX character = '?'
@@ -37,7 +37,7 @@ int main() {
     //   }                            //  Discard any other RX characters
     // }
 
-    do_logic();
+    // do_logic();
 
     // TODO: Implement correct IRQ handler to wait for the vertical blanking interval.
     cli();
