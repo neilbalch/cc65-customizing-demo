@@ -19,16 +19,10 @@ Contains the result of following the [`cc65` project](https://cc65.github.io)'s 
 - `src/*`: C source files
   - `main.c`: C source file containing an example program sending an RS232 message for every received `'?'` character
 - `.gitignore`: Tells `git` SCM to not care about tracking changes to any files from intermediate build stages and the `6502` ROM image
+- `arcade.cfg`: Linker configuration file describing the layout of different memory segments and their properties
 - `Makefile`: Automated project build instructions, just run `make` or `make all` to compile a ROM image at `./build/6502`
 - `README.md`: Here!
-- `sbc.cfg`: Linker configuration file describing the layout of different memory segments and their properties
-
-## Devlog
-
-- On WSL: `cp /usr/share/cc65/lib/supervision.lib sbc.lib`
-- In `sbc.cfg`'s `SYMBOLS` section, the tutorial says to use `weak = yes`, but [this should likely be `type = weak`](http://forum.6502.org/viewtopic.php?t=5254)
 
 ## TODO
 
-- Rename `sbc.cfg` to something more representative of our project
-- Rename the `CODE` and `CODE2` sections to something more representative of our project
+- Remove extraneous code elements from the CC65 tutorial that aren't needed for the arcade machine

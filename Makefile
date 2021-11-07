@@ -10,7 +10,7 @@ VPATH = src asm
 
 # Specify the sbc.cfg linker config file (-C) and create a memory map file (-m)
 all: crt0.o main.o game_code.o rs232_tx.o interrupt.o vectors.o wait.o
-	ld65 -C sbc.cfg -m build/main.map build/interrupt.o build/vectors.o \
+	ld65 -C arcade.cfg -m build/main.map build/interrupt.o build/vectors.o \
 				build/wait.o build/rs232_tx.o build/game_code.o build/main.o \
 				build/sbc.lib -o build/6502
 

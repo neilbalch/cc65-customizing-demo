@@ -2,7 +2,7 @@
 #define GAME_CODE_H
 
 #include "util.h"
-#pragma code-name ("CODE2")
+#pragma code-name ("GAME")
 
 // Function prototypes with no parameters must be declared with a `void`
 // parameter: https://github.com/cc65/cc65/issues/1591#issuecomment-962532711

@@ -1,6 +1,5 @@
 #include "util.h"
 #include "game_code.h"
-#pragma code-name ("CODE2")
 
 void reset() {
   nop();
