@@ -1,5 +1,3 @@
-build/*
-*.o
-*.map
-*.lib
-a.out
+build/
+dump/
+arcade.bin
