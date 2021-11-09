@@ -2,9 +2,9 @@
 
 objective=
 
-if [ "$1" = "run" ]; then # Run the program
+if [ "$1" = "run" ]; then # Simulate then give the outputed memory as bin files
     objective=run
-elif [ "$1" = "dump" ]; then # Split the binary into the three memory segments (?)
+elif [ "$1" = "dump" ]; then # Split the binary into usable bin files
     objective=dump
 else
     >&2 echo "[Argument Error]: Valid argument not given."
@@ -36,6 +36,7 @@ save ${DUMP_PATH}/vectors.bin   fffa ffff
 quit
 EOF
 
+# Stop if objective was completed
 if [ "$objective" = "dump" ]; then
     exit 0
 fi

@@ -25,7 +25,7 @@ _handle_nmi:
 
 
 
-; reset, program entry point and superloop/gameloop
+; reset, program entry point
 _handle_reset:
         sei                     ; disble irq by default
         ldx #$ff                ; Initialize stack pointer to $01ff
@@ -48,6 +48,7 @@ _handle_reset:
         ; game reset
         jsr _reset
 
+; game loop
 next_frame:    ; handle frame timing
         inc_mem {_FRAME}, {4}      ; increment frame count
         jsr _do_logic           ; do non-vram logic

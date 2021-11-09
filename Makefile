@@ -9,7 +9,7 @@ CFLAGS = --cpu 65c02 -t none -O
 # Where the intermediate-stage Assembly/object files will be saved
 BUILD_DIR = build
 
-# Define a list of all C and Assemnbly source files, as well as the location to
+# List of all C and Assemnbly source files, as well as the location to
 # save the assembled object files
 CXX_SRC = game.c vram.c verify_firmware.c
 CXX_BIN = $(addprefix ${BUILD_DIR}/,$(CXX_SRC:.c=.o))
@@ -17,9 +17,10 @@ CXX_BIN = $(addprefix ${BUILD_DIR}/,$(CXX_SRC:.c=.o))
 ASM_SRC = interrupts.s vectors.s fake_io.s headers.s stop.s cc65.s zero_page.s
 ASM_BIN = $(addprefix ${BUILD_DIR}/,$(ASM_SRC:.s=.o))
 
+# List of header files
 HEADERS = macros.h.s vram.h int.h stop.h zero_page.h
 
-# Path to the default cc65 linker library we're currently "stealing"
+# Path to a template cc65 linker library
 SUPERVISION_LIB = /usr/share/cc65/lib/supervision.lib
 
 # Previx name for all flashable binary files
@@ -49,7 +50,7 @@ ${OUTPUT}: ${MEMORY_DIR}/
 	@dd if=/dev/zero of=$@ bs=1 count=1 seek=65535 status=none
 	@echo "Created $@"
 
-# Build the three different binaries (ROM, FPGA ROM, IO area)
+# Link the object files to create memory files
 ${MEMORY_DIR}/: ${BUILD_DIR}/ ${CXX_BIN} ${ASM_BIN} ${HEADERS}
 	mkdir ${MEMORY_DIR}
 	ld65 -C ${MACHINE}.cfg -m ${BUILD_DIR}/build.map \
@@ -62,12 +63,12 @@ ${MEMORY_DIR}/: ${BUILD_DIR}/ ${CXX_BIN} ${ASM_BIN} ${HEADERS}
 ${BUILD_DIR}/:
 	mkdir ${BUILD_DIR}/
 
-# Override the default/implicit *.c compilation rule to use the cc65/ca65 syntax
+# Compile .c source files
 ${BUILD_DIR}/%.o: %.c
 	$(CC) $(CFLAGS) $^ -o ${BUILD_DIR}/$(^:.c=.s)
 	$(AS) $(ASFLAGS) ${BUILD_DIR}/$(^:.c=.s) -o $@
 
-# Override the default/implicit *.s assembly rule to use the ca65 syntax
+# Compile .s source files
 ${BUILD_DIR}/%.o: %.s
 	$(AS) $(ASFLAGS) $^ -o $@
 

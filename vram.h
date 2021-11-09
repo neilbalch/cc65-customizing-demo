@@ -1,12 +1,12 @@
-// Declare all types and variables associated with interacting with the FPGA's
-// VRAM memory section.
+// Declare all types and variables associated with modifying VRAM
+
 // For more details, see: https://arcade.ucsbieee.org/guides/gpu
 #ifndef __VRAM_H
 #define __VRAM_H
 
 #include "int.h"
 
-// Holds the data to define the grayscale texture of one foreground sprite
+// Holds the data to define the pattern of one foreground sprite
 // or background tile
 typedef struct pattern_s {
     uint8_t data[16];
@@ -42,7 +42,7 @@ extern object_t OBM[32]; // OBject Memory
 #define VFLIP_MASK              0x20
 #define PATTERN_ADDRESS_MASK    0x1f
 
-// Color masks for background colors (nonshifted!)
+// Color masks for colors
 #define BLACK_C_MASK     0x0
 #define BLUE_C_MASK      0x1
 #define GREEN_C_MASK     0x2
@@ -52,7 +52,7 @@ extern object_t OBM[32]; // OBject Memory
 #define YELLOW_C_MASK    0x6
 #define WHITE_C_MASK     0x7
 
-// "LSB" background color masks
+// Default color masks
 #define BLACK_C0_MASK    BLACK_C_MASK   << 0
 #define BLUE_C0_MASK     BLUE_C_MASK    << 0
 #define GREEN_C0_MASK    GREEN_C_MASK   << 0
@@ -61,7 +61,7 @@ extern object_t OBM[32]; // OBject Memory
 #define MAGENTA_C0_MASK  MAGENTA_C_MASK << 0
 #define YELLOW_C0_MASK   YELLOW_C_MASK  << 0
 #define WHITE_C0_MASK    WHITE_C_MASK   << 0
-// "MSB" background color masks
+// Alt color masks
 #define BLACK_C1_MASK    BLACK_C_MASK   << 3
 #define BLUE_C1_MASK     BLUE_C_MASK    << 3
 #define GREEN_C1_MASK    GREEN_C_MASK   << 3

@@ -1,6 +1,8 @@
 ; Initializes the C runtime environemnt (aka. crt0.s in other projects)
 .export init_cc65
 
+; Insired by https://github.com/cc65/cc65/blob/master/libsrc/supervision/crt0.s
+
 .import __RAM_START__, __RAM_SIZE__     ; Import the RAM's properties from
                                         ; linker-generated symbols.
 
