@@ -1,5 +1,7 @@
 # Arcade cc65 Pre-Alpha
 
+TODO: Make this README better (*give implementation synopsis*) once the file structure is sorted out (*pun intended*)
+
 1. Install py65mon from <https://github.com/ucsbieee/py65>
 
 2. Run `make`
