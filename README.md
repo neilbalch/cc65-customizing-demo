@@ -7,7 +7,7 @@ Contains the result of following the [`cc65` project](https://cc65.github.io)'s 
 - `.vscode/*`: VSCode's workspace configurations
 - `build/*`: Location where `make` is instructed to dump all files from intermediate building stages, as well as the final `6502` ROM image
 - `.gitignore`: Tells `git` SCM to not care about tracking changes to any files from intermediate build stages and the `6502` ROM image
-- `crt0.s`: 6502 Assembly containing the logic required to initialize the C runtime environment and clean it up if/when the C `main()` function exits
+  - `crt0.s`: 6502 Assembly containing the logic required to [initialize the C runtime environment](https://en.wikipedia.org/wiki/Crt0) and clean it up if/when the C `main()` function exits
 
   **NOTE:** This is actually the entry point to the program and directly calls the `main()` function
 
