@@ -1,4 +1,4 @@
-
+; Initializes the C runtime environemnt (aka. crt0.s in other projects)
 .export init_cc65
 
 .import __RAM_START__, __RAM_SIZE__     ; Import the RAM's properties from

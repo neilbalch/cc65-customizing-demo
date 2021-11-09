@@ -1,4 +1,4 @@
-
+// Ensures that both the program ROM and game ROM have identical version strings
 #pragma code-name ("FIRMWARE_CODE")
 
 #include "int.h"
@@ -12,7 +12,7 @@ extern const char ROM_FW_HEADER[];
 bool streq( const char * a, const char * b ) {
     uint8_t i = 0;
     while (a[i]==b[i]) {
-        if (a[i]==0)
+        if (a[i]==0) // Null-terminator
             return true;
         i++;
     }

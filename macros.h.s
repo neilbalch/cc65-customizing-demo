@@ -1,4 +1,4 @@
-
+; Defines a helper procedure for safely incrementing a mamory address
 
 ; ; stop
 ; .macro  stp
@@ -9,9 +9,6 @@
 ; .macro  wai
 ;         .byte $cb
 ; .endmacro
-
-
-
 
 ; increment memory with length
 .macro  inc_mem         address, length

@@ -1,4 +1,5 @@
-
+// Defines convenient integer types of different sizes. Analogous to those
+// of the C++ `cstdint` header: https://en.cppreference.com/w/cpp/types/integer
 #ifndef __INT_H
 #define __INT_H
 

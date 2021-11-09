@@ -1,5 +1,4 @@
-
-
+; Simulates activity in the memory segment associated with the game controllers
 .segment "IO"
 
 .export _IN_VBLANK, _CLR_VBLANK_IRQ, CONTROLLER_1, CONTROLLER_2

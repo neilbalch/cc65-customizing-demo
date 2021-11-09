@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-
 objective=
 
-if [ "$1" = "run" ]; then
+if [ "$1" = "run" ]; then # Run the program
     objective=run
-elif [ "$1" = "dump" ]; then
+elif [ "$1" = "dump" ]; then # Split the binary into the three memory segments (?)
     objective=dump
 else
     >&2 echo "[Argument Error]: Valid argument not given."

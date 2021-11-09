@@ -25,7 +25,7 @@ _handle_nmi:
 
 
 
-; reset
+; reset, program entry point and superloop/gameloop
 _handle_reset:
         sei                     ; disble irq by default
         ldx #$ff                ; Initialize stack pointer to $01ff

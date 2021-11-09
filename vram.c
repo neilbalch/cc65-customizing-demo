@@ -1,4 +1,5 @@
-
+// Define all VRAM component arrays in the proper memory segments corresponding
+// to their memory map location
 #include "vram.h"
 
 #pragma bss-name ("PMF")
