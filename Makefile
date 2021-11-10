@@ -8,7 +8,7 @@ BUILD_DIR = build
 
 BIN_PREFIX =
 
-CXX_SRC = vram.c verify_firmware.c
+CXX_SRC = vram.c verify_firmware.c Q9_6.c
 CXX_BIN = $(addprefix ${BUILD_DIR}/o/${BIN_PREFIX},$(CXX_SRC:.c=.o))
 
 ASM_SRC = crt0.s vectors.s io.s fw_headers.s stop.s arcade_zero_page.s

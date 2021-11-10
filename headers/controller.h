@@ -1,4 +1,5 @@
-
+// Defines convenient macros for masking out specific user inputs from the
+// game controller inputs
 #ifndef __CONTROLLER_H
 #define __CONTROLLER_H
 

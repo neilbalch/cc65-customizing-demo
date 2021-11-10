@@ -14,6 +14,7 @@
 #include "int.h"
 #include "vram.h"
 #include "stop.h"
+#include "Q9_6.h"
 #include "arcade_zero_page.h"
 
 #if SIM
