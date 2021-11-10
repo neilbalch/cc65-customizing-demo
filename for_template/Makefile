@@ -36,13 +36,13 @@ OUTPUT = ${DUMP_DIR}/${MACHINE}.bin
 # run the py65 simulator
 all: clean dump
 
+# Split the unified memory map into constituent memory sections
 dump: ${OUTPUT}
 	./dump.sh dump
 
+# Run the simulator
 run: ${OUTPUT}
 	./dump.sh run
-
-all: clean ${OUTPUT}
 
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator
