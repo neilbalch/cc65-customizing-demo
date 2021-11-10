@@ -1,37 +1,54 @@
+
+// ============ draw.c ============ //
+// Demo of filling the PMB and NTBL //
+// ================================ //
+
+#define SIM 1 // change value depending if running simulation or not
+
+
+// ================================ //
 #pragma code-name ("CODE")
 #pragma bss-name ("BSS")
+// Misc Code Segment
 
 #include "int.h"
 #include "vram.h"
 #include "stop.h"
+#include "arcade_zero_page.h"
 
-//
-// This is a test program that fills the VRAM with a tessellated matrix of
-// bi-colored shading. Utterly useless in practice, but a good test to ensure
-// that the fundamentals of our cc65 implementation and framework are functional
-//
-// Exits with the STP opcode after drawing one frame
-//
+#if SIM
+#include "controller.h"
+#endif
+
 
 bool vram_initialized;
 
+
+// ================================ //
 #pragma code-name ("RESET")
+// Reset Segment
 void reset() {
     vram_initialized = false;
 }
 
+
+// ================================ //
 #pragma code-name ("DO_LOGIC")
+// Do Logic Segment
 void do_logic() {
     if (vram_initialized)
         stop();
 }
 
+
+// ================================ //
 #pragma code-name ("FILL_VRAM")
+// Fill VRAM Segment
 void fill_vram() {
     uint8_t i, j;
 
     // init PMB
-    for ( i = 0; i < 16; i+=1 ) {
+    for ( i = 0; i < 16; i+=2 ) {
         PMB[0].data[i+0] = 0xe4;
         PMB[0].data[i+1] = 0x1b;
     }
@@ -45,3 +62,6 @@ void fill_vram() {
 
     vram_initialized = true;
 }
+
+
+// ================================ //

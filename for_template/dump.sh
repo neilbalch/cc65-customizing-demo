@@ -16,7 +16,6 @@ DUMP_PATH=dump
 PY65=py65mon
 
 mkdir -p ${DUMP_PATH}
-cp arcade.bin ${DUMP_PATH}/arcade.bin
 
 # Ensure py65ucsbieee is installed
 ${PY65} -h > /dev/null 2>&1 || {

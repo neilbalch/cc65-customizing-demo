@@ -3,7 +3,6 @@
 
 #include "int.h"
 #include "stop.h"
-#include "zero_page.h"
 
 extern const char FPGA_FW_HEADER[];
 extern const char ROM_FW_HEADER[];

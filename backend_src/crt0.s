@@ -1,8 +1,36 @@
 ; ---------------------------------------------------------------------------
-; interrupts.s
+; crt0.s
 ; ---------------------------------------------------------------------------
 ;
 ; Startup code for cc65 (Single Board Computer version)
+
+
+
+; ========= Helper Macros ========= ;
+
+; increment memory with length
+.macro  inc_mem         address, length
+
+        .if length = 1
+        inc address
+        .exitmacro
+        .endif
+
+        .local end_inc
+        inc address
+        bne end_inc            ; increment next if overflow occurred
+
+        inc_mem {address+1}, {length-1}
+
+end_inc:
+        .endmacro
+
+
+
+
+
+; ========= Code ========= ;
+
 
 .export   _handle_reset, _handle_irq, _handle_nmi
 .import   _reset, _do_logic, _fill_vram
@@ -16,7 +44,9 @@
 
 .segment "STARTUP"
 
-.include "macros.h.s"
+.include  "zeropage.inc"
+.import __RAM_START__, __RAM_SIZE__     ; Import from arcade.cfg symbols
+.import copydata, zerobss, initlib, donelib
 
 
 ; NMI (disabled)
@@ -27,6 +57,8 @@ _handle_nmi:
 
 ; reset, program entry point
 _handle_reset:
+
+
         sei                     ; disble irq by default
         ldx #$ff                ; Initialize stack pointer to $01ff
         txs
@@ -39,18 +71,26 @@ _handle_reset:
         sta _FRAME+2
         sta _FRAME+3
 
-        ; init stack and heap stuff
-        jsr init_cc65
-
         ; verify firmware is correct
         jsr _verify_firmware
+
+        ; Set cc65 argument stack pointer
+        lda     #<(__RAM_START__ + __RAM_SIZE__)
+        sta     sp
+        lda     #>(__RAM_START__ + __RAM_SIZE__)
+        sta     sp+1
+
+        ; Initialize memory storage
+        jsr zerobss     ; Clear BSS segment
+        jsr copydata    ; Initialize DATA segment
+        jsr initlib     ; Run constructors
 
         ; game reset
         jsr _reset
 
 ; game loop
 next_frame:    ; handle frame timing
-        inc_mem {_FRAME}, {4}      ; increment frame count
+        inc_mem {_FRAME}, {4}   ; increment frame count
         jsr _do_logic           ; do non-vram logic
 
         wai                     ; wait for interrupt

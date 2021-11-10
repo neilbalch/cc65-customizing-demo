@@ -1,2 +1,0 @@
-Draw Demo
-You should see a magestic yellow blob floating in the sky above a grass field.
