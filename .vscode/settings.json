@@ -1,5 +1,8 @@
 {
     "C_Cpp.default.includePath": [
         "headers"
-    ]
+    ],
+    "files.associations": {
+        "*.h": "c"
+    }
 }
