@@ -1,13 +1,17 @@
 // Defines a new type for fixed-point number math. Q9_6 means 9 digits before
 // and 6 digits after the decimal
-#ifndef Q9_6_H
-#define Q9_6_H
+#ifndef __Q9_6_H
+#define __Q9_6_H
 #include "int.h"
 
-typedef int16_t Q9_6;
+typedef sint16_t Q9_6;
 
-Q9_6 new_Q9_6(int16_t num);
-int16_t get_Q9_6(Q9_6 n);
+#define TO_Q9_6(NUM) ((Q9_6)(64.0*NUM))
+
+Q9_6 sint8_to_Q9_6(sint8_t);
+Q9_6 sint16_to_Q9_6(sint16_t);
+sint8_t Q9_6_to_sint8(Q9_6);
+sint16_t Q9_6_to_sint16(Q9_6);
 
 Q9_6 mul(Q9_6 n1, Q9_6 n2);
 Q9_6 div(Q9_6 n1, Q9_6 n2);
