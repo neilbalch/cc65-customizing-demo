@@ -6,7 +6,7 @@
 
 typedef sint16_t Q9_6;
 
-#define TO_Q9_6(NUM) ((Q9_6)(64.0*NUM))
+#define TO_Q9_6(NUM) ((Q9_6)(64*NUM))
 
 Q9_6 sint8_to_Q9_6(sint8_t);
 Q9_6 sint16_to_Q9_6(sint16_t);
