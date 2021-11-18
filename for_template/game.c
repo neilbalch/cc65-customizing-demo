@@ -16,10 +16,7 @@
 #include <stop.h>
 #include <Q9_6.h>
 #include <arcade_zero_page.h>
-
-#if SIM
-#include "controller.h"
-#endif
+#include <controller.h>
 
 
 // ================================ //
