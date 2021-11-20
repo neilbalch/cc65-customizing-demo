@@ -47,13 +47,13 @@ run: ${OUTPUT}
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator
 ${OUTPUT}: ${MEMORY_DIR}/ ${DUMP_DIR}/
-	@dd if=/dev/zero of=$@ bs=1 count=1 seek=16383 status=none
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=16384 status=none
 	@cat ${MEMORY_DIR}/${MACHINE}_fw.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=1 seek=28671 status=none
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=28672 status=none
 	@cat ${MEMORY_DIR}/${MACHINE}_io.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=1 seek=32767 status=none
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=32768 status=none
 	@cat ${MEMORY_DIR}/${MACHINE}_rom.bin >> $@
-	@dd if=/dev/zero of=$@ bs=1 count=1 seek=65535 status=none
+	@dd if=/dev/zero of=$@ bs=1 count=0 seek=65536 status=none
 	@echo "Created $@"
 
 # Build the three different binaries (ROM, FPGA ROM, IO area)
