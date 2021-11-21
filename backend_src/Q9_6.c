@@ -1,5 +1,5 @@
 
-#pragma code-name ("FIRMWARE_CODE")
+#pragma code-name ("CODE")
 
 #include "Q9_6.h"
 

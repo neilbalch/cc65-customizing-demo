@@ -14,10 +14,10 @@ BIN_PREFIX =
 
 # Define a list of all C and Assemnbly source files, as well as the location to
 # save the assembled object files
-CXX_SRC = vram.c verify_firmware.c Q9_6.c
+CXX_SRC = vram.c Q9_6.c
 CXX_BIN = $(addprefix ${BUILD_DIR}/o/${BIN_PREFIX},$(CXX_SRC:.c=.o))
 
-ASM_SRC = crt0.s vectors.s io.s fw_headers.s stop.s arcade_zero_page.s
+ASM_SRC = crt0.s vectors.s io.s fw_headers.s stop.s arcade_zero_page.s reset.s verify_firmware.s
 ASM_BIN = $(addprefix ${BUILD_DIR}/o/${BIN_PREFIX},$(ASM_SRC:.s=.o))
 
 # List of files in the for_template directory to copy over, currently unused
