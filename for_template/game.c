@@ -17,8 +17,8 @@
 #include <controller.h>
 
 
-void reset() { }
+void reset(void) { }
 
-void do_logic() { }
+void do_logic(void) { }
 
-void fill_vram() { }
+void fill_vram(void) { }

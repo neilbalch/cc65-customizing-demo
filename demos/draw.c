@@ -11,47 +11,39 @@
 #pragma bss-name ("BSS")
 // Misc Code Segment
 
-#include "int.h"
-#include "vram.h"
-#include "stop.h"
-#include "Q9_6.h"
-#include "arcade_zero_page.h"
+#include <int.h>
+#include <vram.h>
+#include <stop.h>
+#include <Q9_6.h>
+#include <arcade_zero_page.h>
+#include <controller.h>
 
-#if SIM
-#include "controller.h"
-#endif
+
 
 
 bool vram_initialized;
 
 
-// ================================ //
-#pragma code-name ("RESET")
-// Reset Segment
+
+
 void reset() {
     vram_initialized = false;
 }
 
 
-// ================================ //
-#pragma code-name ("DO_LOGIC")
-// Do Logic Segment
 void do_logic() {
     if (vram_initialized)
         stop();
 }
 
 
-// ================================ //
-#pragma code-name ("FILL_VRAM")
-// Fill VRAM Segment
 void fill_vram() {
     uint8_t i, j;
 
     // init PMB
     for ( i = 0; i < 16; i+=2 ) {
-        PMB[0].data[i+0] = 0xe4;
-        PMB[0].data[i+1] = 0x1b;
+        PMB[0][i+0] = 0xe4;
+        PMB[0][i+1] = 0x1b;
     }
 
     // init NTBL

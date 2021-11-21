@@ -1,74 +1,28 @@
 
+#ifndef __PATTERNS_H
+#define __PATTERNS_H
+
+
 #include <vram.h>
 
-const pattern_t person_normal = {{
-    0x0a,0xa0,
-    0x2f,0xf8,
-    0x2f,0xf8,
-    0xb7,0xde,
-    0xb7,0xde,
-    0xbf,0xfe,
-    0x2f,0xf8,
-    0x0a,0xa0
-}};
-const uint8_t person_normal_pmfa = 0;
+extern const pattern_t person_normal;
+extern const uint8_t person_normal_pmfa;
 
-const pattern_t black = {{
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00,
-    0x00,0x00
-}};
-const uint8_t black_pmba = 0;
+extern const pattern_t black;
+extern const uint8_t black_pmba;
 
-const pattern_t dark_gray = {{
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55,
-    0x55,0x55
-}};
-const uint8_t dark_gray_pmba = 1;
+extern const pattern_t dark_gray;
+extern const uint8_t dark_gray_pmba;
 
-const pattern_t light_gray = {{
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa,
-    0xaa,0xaa
-}};
-const uint8_t light_gray_pmba = 2;
+extern const pattern_t light_gray;
+extern const uint8_t light_gray_pmba;
 
-const pattern_t white = {{
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff,
-    0xff,0xff
-}};
-const uint8_t white_pmba = 3;
+extern const pattern_t white;
+extern const uint8_t white_pmba;
 
 
-void load_background_pattern(const pattern_t * const pattern, const uint8_t pmba) {
-    uint8_t i;
-    for (i = 0; i < 16; i++)
-        PMB[pmba].data[i] = pattern->data[i];
-}
-void load_foreground_pattern(const pattern_t * const pattern, const uint8_t pmfa) {
-    uint8_t i;
-    for (i = 0; i < 16; i++)
-        PMF[pmfa].data[i] = pattern->data[i];
-}
+void load_background_pattern(const pattern_t pattern, const uint8_t pmba);
+void load_foreground_pattern(const pattern_t pattern, const uint8_t pmfa);
+
+
+#endif

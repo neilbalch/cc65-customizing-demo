@@ -2,6 +2,6 @@
 #ifndef __STOP_H
 #define __STOP_H
 
-extern void stop();
+extern void stop(void);
 
 #endif

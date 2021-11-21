@@ -8,9 +8,7 @@
 
 // Holds the data to define the pattern of one foreground sprite
 // or background tile
-typedef struct pattern_s {
-    uint8_t data[16];
-} pattern_t;
+typedef uint8_t pattern_t[16];
 
 // Defines the texture used to populate a given 8x8 grid of pixels (index into
 // the corresponding pattern memory bank and color/transform properties)
