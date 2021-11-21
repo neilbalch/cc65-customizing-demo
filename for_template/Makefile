@@ -26,23 +26,32 @@ MACHINE = arcade
 MEMORY_DIR = ${BUILD_DIR}/memory
 
 DUMP_DIR = dump
+DUMP_FILES = ${DUMP_DIR}/firmware.bin ${DUMP_DIR}/rom.bin ${DUMP_DIR}/vectors.bin
+RUN_FILES = ${DUMP_DIR}/final.bin ${DUMP_DIR}/ram.bin ${DUMP_DIR}/vram.bin ${DUMP_DIR}/zeros.bin
 
 # Where the conjoined memory map will be saved (union of all flashable binaries)
 OUTPUT = ${DUMP_DIR}/${MACHINE}.bin
 
-.PHONY: all clean
+.PHONY: all dump run verify clean
 
 # By default (with no build target argument, i.e. `make`), build everything and
 # run the py65 simulator
-all: clean dump
+all: clean dump verify
+
+dump: ${DUMP_FILES}
+
+run: ${RUN_FILES}
 
 # Split the unified memory map into constituent memory sections
-dump: ${OUTPUT}
+${DUMP_FILES}: ${OUTPUT}
 	./dump.sh dump
 
 # Run the simulator
-run: ${OUTPUT}
+${RUN_FILES}: ${OUTPUT}
 	./dump.sh run
+
+verify: ${DUMP_DIR}/firmware.bin
+	@cmp -s ${DUMP_DIR}/firmware.bin firmware.bin || exit 1
 
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator
