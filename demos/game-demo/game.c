@@ -41,7 +41,7 @@ void reset(void) {
     CONTROLLER_1_PREV = 0;
 
     p.xp=SINT_TO_Q9_6(124);
-    p.yp=SINT_TO_Q9_6(124);
+    p.yp=ground;
     p.xv=0;
     p.yv=0;
     p.object=0;
@@ -57,12 +57,26 @@ void reset(void) {
 
 
 void do_logic(void) {
+    // calculate positive edge of all controller buttons
     CONTROLLER_1_PEDGE = (~CONTROLLER_1_PREV)&CONTROLLER_1;
     CONTROLLER_1_PREV = CONTROLLER_1;
 
-    #if SIM
-    if (vram_initialized) stop();
-    #endif
+    // check for reset button
+    if ( CONTROLLER_1_PEDGE & CONTROLLER_START_MASK )
+        reset();
+
+    // check for jump button
+    if ( CONTROLLER_1_PEDGE & CONTROLLER_A_MASK )
+        person_jump(&p);
+
+    // check for left or right
+    if ( CONTROLLER_1 & CONTROLLER_LEFT_MASK )
+        p.xv -= person_horizontal_acc;
+    if ( CONTROLLER_1 & CONTROLLER_RIGHT_MASK )
+        p.xv += person_horizontal_acc;
+
+    // update person postion
+    person_advance(&p);
 }
 
 
@@ -74,7 +88,7 @@ void init_vram(void);
 
 void fill_vram(void) {
     if (!vram_initialized) init_vram();
-    draw_person(&p);
+    person_draw(&p);
 }
 
 

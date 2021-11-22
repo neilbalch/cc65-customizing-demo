@@ -42,3 +42,7 @@ Q9_6 Q9_6_clamp(const Q9_6 min, const Q9_6 T, const Q9_6 max) {
     if (T > max) return max;
     return T;
 }
+
+Q9_6 Q9_6_neg(const Q9_6 num) {
+    return (~num) + 1;
+}

@@ -18,5 +18,6 @@ Q9_6 Q9_6_div(Q9_6 n1, Q9_6 n2);
 
 Q9_6 Q9_6_clamp(const Q9_6 min, const Q9_6 T, const Q9_6 max);
 
+Q9_6 Q9_6_neg(const Q9_6 num);
 
 #endif

@@ -15,6 +15,7 @@
 #include <Q9_6.h>
 #include <arcade_zero_page.h>
 #include <controller.h>
+#include <screen.h>
 
 
 void reset(void) { }
