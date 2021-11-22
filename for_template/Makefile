@@ -52,7 +52,11 @@ ${RUN_FILES}: ${OUTPUT}
 	./dump.sh run
 
 verify: ${DUMP_DIR}/firmware.bin
-	@cmp -s ${DUMP_DIR}/firmware.bin firmware.bin || exit 1
+	@mkdir -p .firmware_hd_temp
+	@xxd -p -c 16 firmware.bin > .firmware_hd_temp/vanilla.hex
+	@xxd -p -c 16 ${DUMP_DIR}/firmware.bin > .firmware_hd_temp/curr.hex
+	@diff .firmware_hd_temp/vanilla.hex .firmware_hd_temp/curr.hex && echo "SUCCESS: Firmware matches"
+	@rm -rf .firmware_hd_temp
 
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator
@@ -69,6 +73,7 @@ ${OUTPUT}: ${MEMORY_DIR}/
 
 # Build the three different binaries (ROM, FPGA ROM, IO area)
 ${MEMORY_DIR}/: ${CXX_BIN} ${ASM_BIN} ${HEADERS}
+	@rm -rf $@
 	@mkdir -p build/.temp_memory
 	ld65 -C ${MACHINE}.cfg -m ${BUILD_DIR}/build.map \
 	    ${ASM_BIN} \

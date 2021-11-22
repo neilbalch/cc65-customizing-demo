@@ -3,7 +3,7 @@
 
 .include  "zeropage.inc"
 .import __RAM_START__, __RAM_SIZE__     ; Import from arcade.cfg symbols
-.import copydata, zerobss, initlib, donelib
+.import zerobss, copydata
 
 .import _reset
 .export _game_reset
@@ -15,10 +15,9 @@ _game_reset:
         lda     #>(__RAM_START__ + __RAM_SIZE__)
         sta     sp+1
 
-        ; Initialize memory storage
+        ; Initialize memory
         jsr zerobss     ; Clear BSS segment
         jsr copydata    ; Initialize DATA segment
-        jsr initlib     ; Run constructors
 
         jsr _reset
 

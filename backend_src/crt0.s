@@ -36,7 +36,7 @@ end_inc:
 .import GAME_RESET_VECTOR, DO_LOGIC_VECTOR, FILL_VRAM_VECTOR
 .import _CLR_VBLANK_IRQ, _IN_VBLANK
 
-.import verify_firmware, init_cc65
+.import verify_firmware
 
 .export __STARTUP__ : absolute = 1
 
