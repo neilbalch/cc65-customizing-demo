@@ -27,12 +27,18 @@ sint16_t Q9_6_to_sint16(Q9_6 num) {
     return (num >> 6);
 }
 
-Q9_6 mul(Q9_6 n1, Q9_6 n2) {
+Q9_6 Q9_6_mul(Q9_6 n1, Q9_6 n2) {
     // TODO
     return ((sint32_t)n1 * (sint32_t)n2) >> 6;
 }
 
-Q9_6 div(Q9_6 n1, Q9_6 n2) {
+Q9_6 Q9_6_div(Q9_6 n1, Q9_6 n2) {
     // TODO
     return (n1 / (n2 >> 6));
+}
+
+Q9_6 Q9_6_clamp(const Q9_6 min, const Q9_6 T, const Q9_6 max) {
+    if (T < min) return min;
+    if (T > max) return max;
+    return T;
 }
