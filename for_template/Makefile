@@ -39,17 +39,28 @@ OUTPUT = ${DUMP_DIR}/${MACHINE}.bin
 # run the py65 simulator
 all: clean verify
 
-dump: ${DUMP_DIR}/rom.bin
+dump: ${DUMP_FILES}
 
 run: ${DUMP_DIR}/zeros.bin
 
 # Split the unified memory map into constituent memory sections
-${DUMP_FILES}: ${OUTPUT}
-	./dump.sh dump
+${DUMP_DIR}/firmware.bin: ${OUTPUT}
+	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;4000"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;3000"|bc) count=1 status=none > $@
+	@echo "Created $@"
+
+${DUMP_DIR}/rom.bin: ${OUTPUT}
+	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;8000"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;8000"|bc) count=1 status=none > $@
+	@echo "Created $@"
+
+${DUMP_DIR}/vectors.bin: ${OUTPUT}
+	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;FFFA"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;6"|bc) count=1 status=none > $@
+	@echo "Created $@"
+
 
 # Run the simulator
-${RUN_FILES}: ${OUTPUT}
-	./dump.sh run
+${RUN_FILES}: ${OUTPUT} ${DUMP_DIR}/vectors.bin
+	@mkdir -p ${DUMP_DIR}
+	./run.sh ${OUTPUT} ${DUMP_DIR}/vectors.bin ${DUMP_DIR}
 
 verify: ${DUMP_DIR}/firmware.bin
 	@mkdir -p .firmware_hd_temp
