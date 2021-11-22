@@ -17,13 +17,14 @@ CXX_BIN = $(addprefix ${BUILD_DIR}/,$(CXX_SRC:.c=.o))
 ASM_SRC = game_header.s
 ASM_BIN = $(addprefix ${BUILD_DIR}/,$(ASM_SRC:.s=.o))
 
-LIB_FILES = $(shell find lib/*)
+LIB_FILES = $(shell find lib -type f)
 
-# Previx name for all flashable binary files
+# Prefix name for all flashable binary files
 MACHINE = arcade
 
 # Where the flashable binaries will be saved
 MEMORY_DIR = ${BUILD_DIR}/memory
+MEMORY_FILES = ${MEMORY_DIR}/${MACHINE}_fw.bin ${MEMORY_DIR}/${MACHINE}_io.bin ${MEMORY_DIR}/${MACHINE}_rom.bin
 
 DUMP_DIR = dump
 DUMP_FILES = ${DUMP_DIR}/firmware.bin ${DUMP_DIR}/rom.bin ${DUMP_DIR}/vectors.bin
@@ -36,11 +37,11 @@ OUTPUT = ${DUMP_DIR}/${MACHINE}.bin
 
 # By default (with no build target argument, i.e. `make`), build everything and
 # run the py65 simulator
-all: clean dump verify
+all: clean verify
 
-dump: ${DUMP_FILES}
+dump: ${DUMP_DIR}/rom.bin
 
-run: ${RUN_FILES}
+run: ${DUMP_DIR}/zeros.bin
 
 # Split the unified memory map into constituent memory sections
 ${DUMP_FILES}: ${OUTPUT}
@@ -55,7 +56,8 @@ verify: ${DUMP_DIR}/firmware.bin
 
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator
-${OUTPUT}: ${MEMORY_DIR}/ ${DUMP_DIR}/
+${OUTPUT}: ${MEMORY_DIR}/
+	@mkdir -p ${DUMP_DIR}
 	@dd if=/dev/zero of=$@ bs=1 count=0 seek=16384 status=none
 	@cat ${MEMORY_DIR}/${MACHINE}_fw.bin >> $@
 	@dd if=/dev/zero of=$@ bs=1 count=0 seek=28672 status=none
@@ -66,31 +68,28 @@ ${OUTPUT}: ${MEMORY_DIR}/ ${DUMP_DIR}/
 	@echo "Created $@"
 
 # Build the three different binaries (ROM, FPGA ROM, IO area)
-${MEMORY_DIR}/: ${BUILD_DIR}/ ${CXX_BIN} ${ASM_BIN} ${HEADERS}
-	mkdir -p ${MEMORY_DIR}
+${MEMORY_DIR}/: ${CXX_BIN} ${ASM_BIN} ${HEADERS}
+	@mkdir -p build/.temp_memory
 	ld65 -C ${MACHINE}.cfg -m ${BUILD_DIR}/build.map \
 	    ${ASM_BIN} \
 	    ${CXX_BIN} \
 	    ${LIB_FILES} \
 	    arcade.lib \
-	    -o ${MACHINE}
+	    -o build/.temp_memory/${MACHINE}
+	mv build/.temp_memory $@
 
-# Create the build directory
-${BUILD_DIR}/:
-	mkdir ${BUILD_DIR}/
-
-${DUMP_DIR}/:
-	mkdir ${DUMP_DIR}
 
 # Override the default/implicit *.c compilation rule to use the cc65/ca65 syntax
 ${BUILD_DIR}/%.o: %.c
+	@mkdir -p ${BUILD_DIR}
 	$(CC) -I headers $(CFLAGS) $^ -o ${BUILD_DIR}/$(^:.c=.s)
 	$(AS) $(ASFLAGS) ${BUILD_DIR}/$(^:.c=.s) -o $@
 
 # Override the default/implicit *.s assembly rule to use the ca65 syntax
 ${BUILD_DIR}/%.o: %.s
+	@mkdir -p ${BUILD_DIR}
 	$(AS) $(ASFLAGS) $^ -o $@
 
 # Purge all built files
 clean:
-	rm -rf ${BUILD_DIR}/ ${OUTPUT} dump/
+	rm -rf ${BUILD_DIR}/ dump/

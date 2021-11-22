@@ -8,6 +8,7 @@ CFLAGS = --cpu 65c02 -t none -O
 
 # Where the intermediate-stage Assembly/object files will be saved
 BUILD_DIR = build
+DUMP_DIR = dump
 
 # Unknown usage
 BIN_PREFIX =
@@ -30,58 +31,60 @@ SUPERVISION_LIB = /usr/share/cc65/lib/supervision.lib
 # Previx name for all flashable binary files
 MACHINE = arcade
 
-.PHONY: all game_template clean
+.PHONY: all template clean
 
 # By default (with no build target argument, i.e. `make`), build the template
 # and set it up in a new directory
-all: clean game_template
+all: clean template
 
-game_template: template/ ${FOR_TEMPLATE_FILES_OUT} template/headers/ template/arcade.lib template/arcade.cfg template/firmware.bin
+template: template/firmware.bin
 
-template/:
-	mkdir -p $@
+template/%: for_template/%
+	@mkdir -p template
+	cp -r $< $@
 
-${FOR_TEMPLATE_FILES_OUT}: template/ ${FOR_TEMPLATE_FILES_IN}
-	cp -r for_template/. template/
-
-template/headers/: template/ $(shell find headers -type f)
+template/headers/: $(shell find headers -type f)
+	@mkdir -p template
 	cp -r headers/ $@
 
-template/lib/: template/ ${CXX_BIN} ${ASM_BIN}
+template/lib/: ${CXX_BIN} ${ASM_BIN}
+	@mkdir -p template
 	cp -r ${BUILD_DIR}/o/ $@
 
-template/arcade.lib: template/ ${BUILD_DIR}/arcade.lib
+template/arcade.lib: ${BUILD_DIR}/arcade.lib
+	@mkdir -p template
 	cp -r ${BUILD_DIR}/arcade.lib $@
 
-template/arcade.cfg: template/ arcade.cfg
+template/arcade.cfg: arcade.cfg
+	@mkdir -p template
 	cp -r arcade.cfg $@
 
-template/firmware.bin: template/ ${FOR_TEMPLATE_FILES_OUT} template/headers/ template/lib/ template/arcade.lib template/arcade.cfg
-	make -C template/ dump
-	cp template/dump/firmware.bin $@
+template/firmware.bin: ${FOR_TEMPLATE_FILES_OUT} template/headers/ template/lib/ template/arcade.lib template/arcade.cfg
+# TO DO: Fix template/Makefile clock skew
+	@sleep 1
+	make -C template/ dump &&\
+	cp template/${DUMP_DIR}/firmware.bin $@ &&\
 	make -C template/ clean
 
 
 # Create the arcade machine libraries
-${BUILD_DIR}/arcade.lib: ${BUILD_DIR}/
+${BUILD_DIR}/arcade.lib:
+	@mkdir -p ${BUILD_DIR}
 	cp ${SUPERVISION_LIB} $@
 
 
-# Create build directory structure
-${BUILD_DIR}/:
-	mkdir -p ${BUILD_DIR}
-	mkdir -p ${BUILD_DIR}/s
-	mkdir -p ${BUILD_DIR}/o
-
 # Compile .c source files
 ${BUILD_DIR}/o/${BIN_PREFIX}%.o: backend_src/%.c $(shell find headers -type f)
+	@mkdir -p ${BUILD_DIR}/s
 	$(CC) -I headers $(CFLAGS) $< -o ${BUILD_DIR}/s/$(notdir $(<:.c=.s))
+	@mkdir -p ${BUILD_DIR}/o
 	$(AS) $(ASFLAGS) ${BUILD_DIR}/s/$(notdir $(<:.c=.s)) -o $@
 
 # Compile .s source files
 ${BUILD_DIR}/o/${BIN_PREFIX}%.o: backend_src/%.s
+	@mkdir -p ${BUILD_DIR}/o
 	$(AS) $(ASFLAGS) $^ -o $@
 
 # Purge all built files
 clean:
-	rm -rf build template
+	rm -rf ${BUILD_DIR} template
