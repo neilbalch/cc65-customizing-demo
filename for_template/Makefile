@@ -41,8 +41,6 @@ all: clean verify
 
 dump: ${DUMP_FILES}
 
-run: ${DUMP_DIR}/zeros.bin
-
 # Split the unified memory map into constituent memory sections
 ${DUMP_DIR}/firmware.bin: ${OUTPUT}
 	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;4000"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;3000"|bc) count=1 status=none > $@
@@ -56,18 +54,20 @@ ${DUMP_DIR}/vectors.bin: ${OUTPUT}
 	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;FFFA"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;6"|bc) count=1 status=none > $@
 	@echo "Created $@"
 
-
-# Run the simulator
-${RUN_FILES}: ${OUTPUT} ${DUMP_DIR}/vectors.bin
-	@mkdir -p ${DUMP_DIR}
-	./run.sh ${OUTPUT} ${DUMP_DIR}/vectors.bin ${DUMP_DIR}
-
+# Verify newly generated firmware code matches the starter code
 verify: ${DUMP_DIR}/firmware.bin
 	@mkdir -p .firmware_hd_temp
 	@xxd -p -c 16 firmware.bin > .firmware_hd_temp/vanilla.hex
 	@xxd -p -c 16 ${DUMP_DIR}/firmware.bin > .firmware_hd_temp/curr.hex
 	@diff .firmware_hd_temp/vanilla.hex .firmware_hd_temp/curr.hex && echo "SUCCESS: Firmware matches"
 	@rm -rf .firmware_hd_temp
+
+
+# Run the simulator
+run ${RUN_FILES}: ${OUTPUT} ${DUMP_DIR}/vectors.bin
+	@mkdir -p ${DUMP_DIR}
+	./run.sh ${OUTPUT} ${DUMP_DIR}/vectors.bin ${DUMP_DIR}
+
 
 # Hack together the three binaries output by ld65 into one unified memory map
 # understandable by the py65 simulator

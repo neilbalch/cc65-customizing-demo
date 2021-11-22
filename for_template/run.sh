@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# ensure script is not already running
-if pidof -x `basename "$0"` >/dev/null; then
-    exit 0
-fi
-
 
 INPUT=$1
 VECTORS=$2
