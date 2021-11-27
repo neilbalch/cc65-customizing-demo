@@ -1,3 +1,26 @@
+
+# Define a list of all C and Assemnbly source files
+CXX_SRC = game.c
+ASM_SRC =
+
+# List of PNG images used for patterns
+IMAGES =
+
+
+# Where the intermediate-stage Assembly/object files will be saved
+BUILD_DIR = build
+
+# Where the created binaries are stored
+DUMP_DIR = dump
+
+
+
+# ============== DO NOT EDIT BELOW THIS LINE ============== #
+
+.PHONY: all dump run verify clean
+
+MACHINE = arcade
+
 # Instruct that compilation and assembly should be done using cc65/ca65 and
 # specify some required flags (https://cc65.github.io/doc/customizing.html#toc9)
 AS = ca65
@@ -6,34 +29,26 @@ ASFLAGS = --cpu 65c02
 CC = cc65
 CFLAGS = --cpu 65c02 -t none -O
 
-# Where the intermediate-stage Assembly/object files will be saved
-BUILD_DIR = build
+PYTHON = python
 
-# Define a list of all C and Assemnbly source files, as well as the location to
-# save the assembled object files
-CXX_SRC = game.c
 CXX_BIN = $(addprefix ${BUILD_DIR}/,$(CXX_SRC:.c=.o))
+ASM_BIN = $(addprefix ${BUILD_DIR}/,$(ASM_SRC:.s=.o)) ${BUILD_DIR}/backend/game_header.o
 
-ASM_SRC = game_header.s
-ASM_BIN = $(addprefix ${BUILD_DIR}/,$(ASM_SRC:.s=.o))
+RESOURCE_DIR = ${BUILD_DIR}/resources
+RESOURCES = $(addprefix ${RESOURCE_DIR}/,$(IMAGES:.png=.pat))
 
-LIB_FILES = $(shell find lib -type f)
+LIB_FILES = $(shell find backend/lib -type f)
 
-# Prefix name for all flashable binary files
-MACHINE = arcade
 
 # Where the flashable binaries will be saved
 MEMORY_DIR = ${BUILD_DIR}/memory
 MEMORY_FILES = ${MEMORY_DIR}/${MACHINE}_fw.bin ${MEMORY_DIR}/${MACHINE}_io.bin ${MEMORY_DIR}/${MACHINE}_rom.bin
 
-DUMP_DIR = dump
 DUMP_FILES = ${DUMP_DIR}/firmware.bin ${DUMP_DIR}/rom.bin ${DUMP_DIR}/vectors.bin
 RUN_FILES = ${DUMP_DIR}/final.bin ${DUMP_DIR}/ram.bin ${DUMP_DIR}/vram.bin ${DUMP_DIR}/zeros.bin
 
-# Where the conjoined memory map will be saved (union of all flashable binaries)
+# Entire address space
 OUTPUT = ${DUMP_DIR}/${MACHINE}.bin
-
-.PHONY: all dump run verify clean
 
 # By default (with no build target argument, i.e. `make`), build everything and
 # run the py65 simulator
@@ -54,10 +69,15 @@ ${DUMP_DIR}/vectors.bin: ${OUTPUT}
 	@dd if=${OUTPUT} bs=$(shell echo "ibase=16;FFFA"|bc) skip=1 status=none | dd bs=$(shell echo "ibase=16;6"|bc) count=1 status=none > $@
 	@echo "Created $@"
 
+${RESOURCE_DIR}/%.pat: %.png
+	@mkdir -p $(dir $@)
+	@${PYTHON} backend/pattern_converter.py $< $@
+	@echo "Created \"$@\" from \"$<\""
+
 # Verify newly generated firmware code matches the starter code
 verify: ${DUMP_DIR}/firmware.bin
 	@mkdir -p .firmware_hd_temp
-	@xxd -p -c 16 firmware.bin > .firmware_hd_temp/vanilla.hex
+	@xxd -p -c 16 backend/firmware.bin > .firmware_hd_temp/vanilla.hex
 	@xxd -p -c 16 ${DUMP_DIR}/firmware.bin > .firmware_hd_temp/curr.hex
 	@diff .firmware_hd_temp/vanilla.hex .firmware_hd_temp/curr.hex && echo "SUCCESS: Firmware matches"
 	@rm -rf .firmware_hd_temp
@@ -66,7 +86,7 @@ verify: ${DUMP_DIR}/firmware.bin
 # Run the simulator
 run ${RUN_FILES}: ${OUTPUT} ${DUMP_DIR}/vectors.bin
 	@mkdir -p ${DUMP_DIR}
-	./run.sh ${OUTPUT} ${DUMP_DIR}/vectors.bin ${DUMP_DIR}
+	@sh backend/run.sh ${OUTPUT} ${DUMP_DIR}/vectors.bin ${DUMP_DIR}
 
 
 # Hack together the three binaries output by ld65 into one unified memory map
@@ -86,25 +106,27 @@ ${OUTPUT}: ${MEMORY_DIR}/
 ${MEMORY_DIR}/: ${CXX_BIN} ${ASM_BIN} ${HEADERS}
 	@rm -rf $@
 	@mkdir -p build/.temp_memory
-	ld65 -C ${MACHINE}.cfg -m ${BUILD_DIR}/build.map \
+	ld65 -C backend/${MACHINE}.cfg -m ${BUILD_DIR}/build.map \
 	    ${ASM_BIN} \
 	    ${CXX_BIN} \
 	    ${LIB_FILES} \
-	    arcade.lib \
+	    backend/arcade.lib \
 	    -o build/.temp_memory/${MACHINE}
 	mv build/.temp_memory $@
 
 
 # Override the default/implicit *.c compilation rule to use the cc65/ca65 syntax
 ${BUILD_DIR}/%.o: %.c
-	@mkdir -p ${BUILD_DIR}
-	$(CC) -I headers $(CFLAGS) $^ -o ${BUILD_DIR}/$(^:.c=.s)
+	@mkdir -p $(dir $@)
+	$(CC) -I backend/headers $(CFLAGS) $< -o ${BUILD_DIR}/$(^:.c=.s)
 	$(AS) $(ASFLAGS) ${BUILD_DIR}/$(^:.c=.s) -o $@
 
 # Override the default/implicit *.s assembly rule to use the ca65 syntax
-${BUILD_DIR}/%.o: %.s
-	@mkdir -p ${BUILD_DIR}
-	$(AS) $(ASFLAGS) $^ -o $@
+${BUILD_DIR}/%.o: %.s ${RESOURCES}
+	@mkdir -p $(dir $@)
+	@echo ${RESOURCE_DIR}
+	@echo ${RESOURCES}
+	$(AS) --bin-include-dir ${RESOURCE_DIR} $(ASFLAGS) $< -o $@
 
 # Purge all built files
 clean:

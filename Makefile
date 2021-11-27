@@ -23,7 +23,7 @@ ASM_BIN = $(addprefix ${BUILD_DIR}/o/${BIN_PREFIX},$(ASM_SRC:.s=.o))
 
 # List of files in the for_template directory
 FOR_TEMPLATE_FILES_IN = $(shell find for_template -type f)
-FOR_TEMPLATE_FILES_OUT = $(addprefix template/,$(notdir $(FOR_TEMPLATE_FILES_IN)))
+FOR_TEMPLATE_FILES_OUT = $(subst for_template/, template/, $(FOR_TEMPLATE_FILES_IN))
 
 # Path to a template cc65 linker library
 SUPERVISION_LIB = /usr/share/cc65/lib/supervision.lib
@@ -37,29 +37,29 @@ MACHINE = arcade
 # and set it up in a new directory
 all: clean template
 
-template: template/firmware.bin
+template: template/backend/firmware.bin
 
 template/%: for_template/%
-	@mkdir -p template
+	@mkdir -p $(dir $@)
 	cp -r $< $@
 
-template/headers/: $(shell find headers -type f)
+template/backend/headers/: $(shell find headers -type f)
 	@mkdir -p template
 	cp -r headers/ $@
 
-template/lib/: ${CXX_BIN} ${ASM_BIN}
+template/backend/lib/: ${CXX_BIN} ${ASM_BIN}
 	@mkdir -p template
 	cp -r ${BUILD_DIR}/o/ $@
 
-template/arcade.lib: ${BUILD_DIR}/arcade.lib
+template/backend/arcade.lib: ${BUILD_DIR}/arcade.lib
 	@mkdir -p template
 	cp -r ${BUILD_DIR}/arcade.lib $@
 
-template/arcade.cfg: arcade.cfg
+template/backend/arcade.cfg: arcade.cfg
 	@mkdir -p template
 	cp -r arcade.cfg $@
 
-template/firmware.bin: ${FOR_TEMPLATE_FILES_OUT} template/headers/ template/lib/ template/arcade.lib template/arcade.cfg
+template/backend/firmware.bin: ${FOR_TEMPLATE_FILES_OUT} template/backend/headers/ template/backend/lib/ template/backend/arcade.lib template/backend/arcade.cfg
 # TO DO: Fix template/Makefile clock skew
 	@sleep 1
 	make -C template/ dump &&\
