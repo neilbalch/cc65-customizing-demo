@@ -55,6 +55,3 @@ void fill_vram() {
 
     vram_initialized = true;
 }
-
-
-// ================================ //
