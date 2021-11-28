@@ -1,6 +1,6 @@
 
 # Define a list of all C and Assemnbly source files
-CXX_SRC = game.c
+CXX_SRC = game.c patterns.c person.c
 ASM_SRC =
 
 # List of PNG images used for patterns
